@@ -15,7 +15,7 @@
 #define IMU_THRESHOLD 200 // need to check IMU threshold
 #define BUZZ_DURATION (CLOCK_SECOND * 2)
 #define WAIT_DURATION (CLOCK_SECOND * 2)
-#define PRE_IDLE_DURATION (CLOCK_SECOND * 16)
+// #define PRE_IDLE_DURATION (CLOCK_SECOND * 16)
 
 PROCESS(process_task_2, "Task 2");
 AUTOSTART_PROCESSES(&process_task_2);
@@ -48,14 +48,14 @@ PROCESS_THREAD(process_task_2, ev, data) {
     while (1) {
         printf("Current State: %d\n", currState);
         switch (currState) {
-            case STATE_IDLE:
-                printf("STATE_IDLE\n");
-                rtimer_set(&poll_timer, RTIMER_NOW() + poll_sensor_timeout, 0, poll_sensor, NULL);
-                break;
             case STATE_BUZZ:
                 printf("STATE_BUZZ\n");
                 buzzer_start(buzzerFrequency);
                 rtimer_set(&interval_timer, RTIMER_NOW() + interval_timeout, 0, interval_wait, NULL);
+                break;
+            case STATE_IDLE:
+                printf("STATE_IDLE\n");
+                rtimer_set(&poll_timer, RTIMER_NOW() + poll_sensor_timeout, 0, poll_sensor, NULL);
                 break;
         }
         PROCESS_YIELD();
@@ -72,9 +72,13 @@ static void interval_wait() {
     if(buzzerCount < 7) {
         rtimer_set(&interval_timer, RTIMER_NOW() + interval_timeout, 0, interval_buzz, NULL);
     } else {
+        printf("Reset buzzer\n");
         buzzerCount = 0;
         currState = STATE_IDLE;
         prevState = STATE_BUZZ;
+        lastLightLux = 0;
+        lastAccelMag = 0;
+        rtimer_set(&poll_timer, RTIMER_NOW() + poll_sensor_timeout, 0, poll_sensor, NULL);
     }
 }
 
@@ -83,14 +87,17 @@ static void interval_buzz() {
     buzzer_start(buzzerFrequency);
     buzzerCount++;
     printf("BuzzerCount = %d\n", buzzerCount);
-    // if(buzzerCount < 15) {
+    if(buzzerCount < 15) {
         rtimer_set(&interval_timer, RTIMER_NOW() + interval_timeout, 0, interval_wait, NULL);
-    // } else {
-    //     printf("Reset buzzer\n");
-    //     buzzerCount = 0;
-    //     currState = STATE_IDLE;
-    //     prevState = STATE_BUZZ;
-    // }
+    } else {
+        printf("Reset buzzer\n");
+        buzzerCount = 0;
+        currState = STATE_IDLE;
+        prevState = STATE_BUZZ;
+        lastLightLux = 0;
+        lastAccelMag = 0;
+        rtimer_set(&poll_timer, RTIMER_NOW() + poll_sensor_timeout, 0, poll_sensor, NULL);
+    }
 }
 
 static void poll_sensor(struct rtimer *timer, void *ptr) {
@@ -100,8 +107,8 @@ static void poll_sensor(struct rtimer *timer, void *ptr) {
         printf("Light Intensity: %d\n", currLightLux);
         if ((currLightLux - lastLightLux) > 300 && currState == STATE_IDLE) {
             trigger = true;
-            currState = STATE_BUZZ;
-            prevState = STATE_IDLE;
+            // currState = STATE_BUZZ;
+            // prevState = STATE_IDLE;
             printf("Change in Light Intensity detected.\n");
         }
         lastLightLux = currLightLux;
@@ -111,14 +118,16 @@ static void poll_sensor(struct rtimer *timer, void *ptr) {
         printf("Accel Magnitude: %d\n", currAccelMag);
         if (abs(currAccelMag - lastAccelMag) > IMU_THRESHOLD && currState == STATE_IDLE) {
             trigger = true;
-            currState = STATE_BUZZ;
-            prevState = STATE_IDLE;
             printf("Significant Motion detected.\n");
         }
         lastAccelMag = currAccelMag;
     }
     clock++;
-    if (!trigger) {
+    if (trigger) {
+        printf("Trigger\n");
+        currState = STATE_BUZZ;
+        prevState = STATE_IDLE;
+    } else {
         rtimer_set(&poll_timer, RTIMER_NOW() + poll_sensor_timeout, 0, poll_sensor, NULL);
     }
 }
