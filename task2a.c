@@ -15,7 +15,6 @@
 #define IMU_THRESHOLD 200 // need to check IMU threshold
 #define BUZZ_DURATION (CLOCK_SECOND * 2)
 #define WAIT_DURATION (CLOCK_SECOND * 2)
-// #define PRE_IDLE_DURATION (CLOCK_SECOND * 16)
 
 PROCESS(process_task_2, "Task 2");
 AUTOSTART_PROCESSES(&process_task_2);
@@ -107,8 +106,6 @@ static void poll_sensor(struct rtimer *timer, void *ptr) {
         printf("Light Intensity: %d\n", currLightLux);
         if ((currLightLux - lastLightLux) > 300 && currState == STATE_IDLE) {
             trigger = true;
-            // currState = STATE_BUZZ;
-            // prevState = STATE_IDLE;
             printf("Change in Light Intensity detected.\n");
         }
         lastLightLux = currLightLux;
