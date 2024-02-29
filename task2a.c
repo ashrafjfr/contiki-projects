@@ -21,7 +21,6 @@ PROCESS(process_task_2, "Task 2");
 AUTOSTART_PROCESSES(&process_task_2);
 
 static struct rtimer poll_timer, interval_timer;//, pre_idle_timer;
-static struct etimer state_timer;
 static rtimer_clock_t poll_sensor_timeout = RTIMER_SECOND / 100;  // 100 Hz
 static rtimer_clock_t interval_timeout = RTIMER_SECOND * 2;      // 2 seconds
 static int currState = STATE_IDLE;
@@ -37,8 +36,6 @@ static int get_light_reading(void);
 static void init_mpu_reading(void);
 static int get_mpu_reading(void);
 static void poll_sensor(struct rtimer *timer, void *ptr);
-static void do_waitState_timeout();
-
 static void interval_wait();
 static void interval_buzz();
 
@@ -60,11 +57,6 @@ PROCESS_THREAD(process_task_2, ev, data) {
                 buzzer_start(buzzerFrequency);
                 rtimer_set(&interval_timer, RTIMER_NOW() + interval_timeout, 0, interval_wait, NULL);
                 break;
-            case STATE_WAIT:
-                etimer_set(&state_timer, WAIT_DURATION);
-                PROCESS_WAIT_EVENT_UNTIL(ev == PROCESS_EVENT_TIMER);
-                do_waitState_timeout();
-                break;
         }
         PROCESS_YIELD();
     }
@@ -77,12 +69,12 @@ static void interval_wait() {
     buzzer_stop();
     buzzerCount++;
     printf("BuzzerCount = %d\n", buzzerCount);
-    if(buzzerCount < 15) {
+    if(buzzerCount < 7) {
         rtimer_set(&interval_timer, RTIMER_NOW() + interval_timeout, 0, interval_buzz, NULL);
     } else {
         buzzerCount = 0;
         currState = STATE_IDLE;
-        // trigger = false;
+        prevState = STATE_BUZZ;
     }
 }
 
@@ -91,23 +83,15 @@ static void interval_buzz() {
     buzzer_start(buzzerFrequency);
     buzzerCount++;
     printf("BuzzerCount = %d\n", buzzerCount);
-    if(buzzerCount < 15) {
+    // if(buzzerCount < 15) {
         rtimer_set(&interval_timer, RTIMER_NOW() + interval_timeout, 0, interval_wait, NULL);
-    } else {
-        printf("Reset buzzer\n");
-
-        buzzerCount = 0;
-        currState = STATE_IDLE;
-        // trigger = false;
-    }
+    // } else {
+    //     printf("Reset buzzer\n");
+    //     buzzerCount = 0;
+    //     currState = STATE_IDLE;
+    //     prevState = STATE_BUZZ;
+    // }
 }
-
-static void do_waitState_timeout() {
-    printf("Do waitstate time out\n");
-    currState = STATE_BUZZ;
-    prevState = STATE_WAIT;
-}
-
 
 static void poll_sensor(struct rtimer *timer, void *ptr) {
     bool trigger = false;
