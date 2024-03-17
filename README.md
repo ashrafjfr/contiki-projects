@@ -1,9 +1,9 @@
 # Assignment 2
 
 ### Names:
-Leow Yuan Yang (A0217538Y)
-Muhammad Ashraf Bin Mohamad Jaffar (A0217396W)
-Ng Andre (A0217937U)
+- Leow Yuan Yang (A0217538Y)
+- Muhammad Ashraf Bin Mohamad Jaffar (A0217396W)
+- Ng Andre (A0217937U)
 
 ### Instructions to execute program:
 Enter the names of the programs you want to compile in the Makefile, in `CONTIKI_PROJECT = ` .
