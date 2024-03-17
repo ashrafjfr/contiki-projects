@@ -5,7 +5,7 @@
 - Muhammad Ashraf Bin Mohamad Jaffar (A0217396W)
 - Ng Andre (A0217937U)
 
-- Workload was equally split and all tasks were done collaboratively amongst all 3 members.
+- Workload was equally split and all tasks were done collaboratively with all 3 members.
 
 ### Instructions to execute program:
 1. Enter the names of the programs you want to compile in the Makefile, in `CONTIKI_PROJECT = ` .
