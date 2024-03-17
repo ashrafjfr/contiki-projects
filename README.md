@@ -6,12 +6,12 @@
 - Ng Andre (A0217937U)
 
 ### Instructions to execute program:
-Enter the names of the programs you want to compile in the Makefile, in `CONTIKI_PROJECT = ` .
-Compile the program using this command: `make TARGET=cc26x0-cc13x0 BOARD=sensortag/cc2650 all` .
-Open **UniFlash**. Choose your device by typing **CC2650** in the search field and select **CC2650F128**.
-Next, choose the **Texas Instruments XDS110 USB Debug Probe** and hit the Start button.
-Select the compiled files, **file-name.cc26x0-cc13x0** in your working directory and click on load image.
-Open a serial monitor to display the outputs from the SensorTag.
+1. Enter the names of the programs you want to compile in the Makefile, in `CONTIKI_PROJECT = ` .
+2. Compile the program using this command: `make TARGET=cc26x0-cc13x0 BOARD=sensortag/cc2650 all` .
+3. Open **UniFlash**. Choose your device by typing **CC2650** in the search field and select **CC2650F128**.
+4. Next, choose the **Texas Instruments XDS110 USB Debug Probe** and hit the Start button.
+5. Select the compiled files, **file-name.cc26x0-cc13x0** in your working directory and click on load image.
+6. Open a serial monitor to display the outputs from the SensorTag.
 
 ### Task 1 Values:
 - Value of CLOCK_SECOND = 128
