@@ -21,13 +21,13 @@
 - Value of RTIMER_SECOND = 65536
 - Number of clock ticks per second in 1s (real time) using rtimer = 65544
 
-### For Task 2:
+### Task 2 Instructions:
 1. The SensorTag will begin in an IDLE state.
 2. When significant motion or change in light intensity is detected, the SensorTag will enter a BUZZ state where it will play a sound.
 3. This sound will turn on and off every 2 seconds, where the SensorTag will alternate between BUZZ and WAIT states.
 4. After 16 seconds, the SensorTag will return to IDLE state.
 
-### For Task 3:
+### Task 3 Instructions:
 1. The SensorTag will begin in an IDLE state.
 2. When a significant motion is detected, the SensorTag will start checking for changes in light intensity.
 3. When a significant change in light intensity is detected, the SensorTag will enter a BUZZ state where it will play a sound.
