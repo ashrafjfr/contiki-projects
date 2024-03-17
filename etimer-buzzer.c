@@ -53,7 +53,7 @@ do_etimer_timeout()
   f = s % 9;
 
   counter_etimer++;
-  printf("Time(E): %d (cnt) %lu (ticks) %d.%d%d%d (sec) \n",counter_etimer,t, s, ms1,ms2,ms3); 
+  printf("Time(E): %d (cnt) %ld (ticks) %d.%d%d%d (sec) \n",counter_etimer,t, s, ms1,ms2,ms3); 
   //toggle the buzzer
   if (f == 8) 
 	buzzer_stop(); 
