@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = etimer-buzzer rtimer-lightSensor rtimer-IMUSensor
+CONTIKI_PROJECT = task_2 task_3
 all: $(CONTIKI_PROJECT)
 
 CONTIKI = ../
